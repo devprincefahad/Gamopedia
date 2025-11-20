@@ -22,6 +22,6 @@ val sharedModule = module {
     singleOf(::GamesRepositoryImpl).bind<GamesRepository>()
 
     viewModel {
-        GamesViewModel(get(), get())
+        GamesViewModel(repository = get())
     }
 }
