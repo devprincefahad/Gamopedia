@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.Navigator
+import dev.prince.gamopedia.navigation.HomeScreen
 import dev.prince.gamopedia.ui.game.GamesScreen
 import dev.prince.gamopedia.ui.game.GamesViewModel
 import org.jetbrains.compose.resources.painterResource
@@ -26,6 +28,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Preview
 fun App() {
     MaterialTheme {
-        GamesScreen()
+        Navigator(screen = HomeScreen())
     }
 }

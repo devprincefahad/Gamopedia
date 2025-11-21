@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.prince.gamopedia.components.GameItem
 import dev.prince.gamopedia.util.GamesUiState
 import org.koin.compose.viewmodel.koinViewModel
@@ -21,7 +22,7 @@ fun GamesScreen(
 ) {
 
     val state by viewModel.uiState.collectAsState()
-
+    val navigator = LocalNavigator.current
     when (state) {
         is GamesUiState.Loading -> {
             Box(

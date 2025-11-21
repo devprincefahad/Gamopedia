@@ -59,6 +59,10 @@ kotlin {
             implementation(libs.bundles.coil)
 
             implementation(libs.bundles.ktor)
+
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.tabNavigator)
+            implementation(libs.voyager.transitions)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
