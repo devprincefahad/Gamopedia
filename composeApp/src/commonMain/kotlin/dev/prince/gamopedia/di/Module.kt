@@ -4,7 +4,7 @@ import dev.prince.gamopedia.network.ApiService
 import dev.prince.gamopedia.network.KtorClient
 import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.repo.GamesRepositoryImpl
-import dev.prince.gamopedia.ui.game.GamesViewModel
+import dev.prince.gamopedia.viewmodels.GamesViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel

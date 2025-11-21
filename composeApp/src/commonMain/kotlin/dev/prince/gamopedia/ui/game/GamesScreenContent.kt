@@ -13,16 +13,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.prince.gamopedia.components.GameItem
+import dev.prince.gamopedia.navigation.GameDetailsScreen
 import dev.prince.gamopedia.util.GamesUiState
+import dev.prince.gamopedia.viewmodels.GamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun GamesScreen(
+fun GamesScreenContent(
     viewModel: GamesViewModel = koinViewModel()
 ) {
 
     val state by viewModel.uiState.collectAsState()
     val navigator = LocalNavigator.current
+
     when (state) {
         is GamesUiState.Loading -> {
             Box(
@@ -47,7 +50,12 @@ fun GamesScreen(
             LazyColumn {
                 val games = (state as GamesUiState.Success).data
                 items(games) { game ->
-                    GameItem(game)
+                    GameItem(
+                        game = game,
+                        onClick = {
+                            navigator?.push(GameDetailsScreen(game.id))
+                        }
+                    )
                 }
             }
         }
