@@ -2,13 +2,13 @@ package dev.prince.gamopedia.navigation
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
-import dev.prince.gamopedia.ui.home.HomeScreenContent
+import dev.prince.gamopedia.ui.search.SearchScreenContent
 
-class HomeScreen : Screen{
+class SearchScreen : Screen {
 
     @Composable
     override fun Content() {
-        HomeScreenContent()
+        SearchScreenContent()
     }
 
 }

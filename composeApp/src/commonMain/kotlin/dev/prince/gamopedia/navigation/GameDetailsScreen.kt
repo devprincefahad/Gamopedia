@@ -2,13 +2,13 @@ package dev.prince.gamopedia.navigation
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
-import dev.prince.gamopedia.ui.details.GameDetails
+import dev.prince.gamopedia.ui.details.GameDetailsContent
 
-data class GameDetailsScreen(val id: Int) : Screen {
+data class GameDetailsScreen(val id: Int) : Screen{
 
     @Composable
     override fun Content() {
-        GameDetails(gameId = id)
+        GameDetailsContent(gameId = id)
     }
 
 }

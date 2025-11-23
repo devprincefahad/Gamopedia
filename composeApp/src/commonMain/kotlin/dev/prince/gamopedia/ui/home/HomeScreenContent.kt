@@ -1,4 +1,4 @@
-package dev.prince.gamopedia.ui.game
+package dev.prince.gamopedia.ui.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +19,7 @@ import dev.prince.gamopedia.viewmodels.GamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun GamesScreenContent(
+fun HomeScreenContent(
     viewModel: GamesViewModel = koinViewModel()
 ) {
 
