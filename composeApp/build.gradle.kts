@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.material.icons.extended)
 
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
