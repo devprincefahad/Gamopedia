@@ -14,3 +14,10 @@ sealed class GameDetailsUiState {
     data class Success(val data: GameDetailsResponse) : GameDetailsUiState()
     data class Error(val message: String) : GameDetailsUiState()
 }
+
+sealed class SearchUiState {
+    object Idle : SearchUiState()
+    object Loading : SearchUiState()
+    data class Success(val data: List<Result>) : SearchUiState()
+    data class Error(val message: String) : SearchUiState()
+}

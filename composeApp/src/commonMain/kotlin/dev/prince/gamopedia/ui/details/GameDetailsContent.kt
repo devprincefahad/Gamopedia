@@ -63,7 +63,7 @@ fun GameDetailsContent(
 
                 item {
                     AsyncImage(
-                        model = game.backgroundImage,
+                        model = game.backgroundImage ?: "",
                         contentDescription = game.name,
                         modifier = Modifier
                             .fillMaxWidth()

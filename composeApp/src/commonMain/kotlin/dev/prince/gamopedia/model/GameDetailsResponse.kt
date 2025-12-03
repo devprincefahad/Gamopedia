@@ -10,5 +10,5 @@ data class GameDetailsResponse(
     @SerialName("description_raw")
     val description: String,
     @SerialName("background_image")
-    val backgroundImage: String
+    val backgroundImage: String? = null
 )

@@ -34,6 +34,13 @@ class ApiService (val httpClient: HttpClient) {
         }
     }
 
+    suspend fun searchGames(query: String): GameResponse {
+        return httpClient.get("api/games") {
+            parameter("key", API_KEY)
+            parameter("search", query)
+        }.body()
+    }
+
     companion object {
         const val API_KEY = "1516e476943b4a8095bc09c465bb77e3"
     }

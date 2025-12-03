@@ -8,5 +8,5 @@ data class Result(
     var id: Int,
     var name: String,
     @SerialName("background_image")
-    var backgroundImage: String
+    var backgroundImage: String? = null
 )

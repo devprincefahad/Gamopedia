@@ -5,6 +5,7 @@ import dev.prince.gamopedia.network.KtorClient
 import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.repo.GamesRepositoryImpl
 import dev.prince.gamopedia.viewmodels.GamesViewModel
+import dev.prince.gamopedia.viewmodels.SearchViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -23,5 +24,9 @@ val sharedModule = module {
 
     viewModel {
         GamesViewModel(repository = get())
+    }
+
+    viewModel {
+        SearchViewModel(repository = get())
     }
 }

@@ -12,6 +12,8 @@ interface GamesRepository {
 
     fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>>
 
+    fun searchGames(query: String): Flow<Result<GameResponse>>
+
 }
 
 class GamesRepositoryImpl(
@@ -24,6 +26,15 @@ class GamesRepositoryImpl(
 
     override fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>> = flow {
         emit(api.getGameDetails(id))
+    }
+
+    override fun searchGames(query: String): Flow<Result<GameResponse>> = flow {
+        try {
+            val response = api.searchGames(query)
+            emit(Result.success(response))
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
     }
 
 }
