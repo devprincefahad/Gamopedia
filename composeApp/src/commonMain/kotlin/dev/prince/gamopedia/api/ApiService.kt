@@ -1,4 +1,4 @@
-package dev.prince.gamopedia.network
+package dev.prince.gamopedia.api
 
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse

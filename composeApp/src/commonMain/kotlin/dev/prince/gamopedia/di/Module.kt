@@ -1,8 +1,8 @@
 package dev.prince.gamopedia.di
 
 import dev.prince.gamopedia.database.GamesDatabase
-import dev.prince.gamopedia.network.ApiService
-import dev.prince.gamopedia.network.KtorClient
+import dev.prince.gamopedia.api.ApiService
+import dev.prince.gamopedia.api.KtorClient
 import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.repo.GamesRepositoryImpl
 import dev.prince.gamopedia.viewmodels.GamesViewModel
@@ -27,11 +27,10 @@ val sharedModule = module {
     singleOf(::GamesRepositoryImpl).bind<GamesRepository>()
 
     viewModel {
-        GamesViewModel(repository = get())
-    }
-
-    viewModel {
-        SearchViewModel(repository = get())
+        GamesViewModel(
+            repository = get(),
+            networkMonitor = get()
+        )
     }
 
     viewModel {

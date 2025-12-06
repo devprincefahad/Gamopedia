@@ -1,4 +1,4 @@
-package dev.prince.gamopedia.network
+package dev.prince.gamopedia.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest

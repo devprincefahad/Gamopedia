@@ -7,7 +7,7 @@ import dev.prince.gamopedia.database.GamesDao
 import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
-import dev.prince.gamopedia.network.ApiService
+import dev.prince.gamopedia.api.ApiService
 import dev.prince.gamopedia.util.toResultModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
