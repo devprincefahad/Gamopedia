@@ -22,11 +22,10 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreenContent(
     viewModel: GamesViewModel = koinViewModel()
 ) {
-
     val state by viewModel.uiState.collectAsState()
     val navigator = LocalNavigator.current
 
-    when (state) {
+    when (val uiState = state) {
         is GamesUiState.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -41,14 +40,13 @@ fun HomeScreenContent(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                val msg = (state as GamesUiState.Error).message
-                Text("Error: $msg")
+                Text("Error: ${uiState.message}")
             }
         }
 
         is GamesUiState.Success -> {
+            val games = uiState.data
             LazyColumn {
-                val games = (state as GamesUiState.Success).data
                 items(games) { game ->
                     GameItem(
                         game = game,
