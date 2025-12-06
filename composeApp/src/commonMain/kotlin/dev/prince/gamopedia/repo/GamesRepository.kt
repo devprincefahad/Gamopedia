@@ -1,5 +1,6 @@
 package dev.prince.gamopedia.repo
 
+import dev.prince.gamopedia.database.GameDetailsEntity
 import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
@@ -7,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
 
-    fun getGames(): Flow<Result<GameResponse>>
-
     fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>>
+
+    fun observeGameDetails(id: Int): Flow<GameDetailsEntity?>
 
     fun searchGames(query: String): Flow<Result<GameResponse>>
 

@@ -1,5 +1,6 @@
 package dev.prince.gamopedia.repo
 
+import dev.prince.gamopedia.database.GameDetailsEntity
 import dev.prince.gamopedia.database.GameEntity
 import dev.prince.gamopedia.database.GamesDao
 import dev.prince.gamopedia.database.WishlistEntity
@@ -9,6 +10,7 @@ import dev.prince.gamopedia.network.ApiService
 import dev.prince.gamopedia.util.toResultModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
@@ -17,13 +19,60 @@ class GamesRepositoryImpl(
     private val dao: GamesDao
 ) : GamesRepository {
 
-    override fun getGames(): Flow<Result<GameResponse>> = flow {
-        emit(api.getGames())
+    override fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>> = flow {
+        // 1. Emit cached DB first
+        val cached = dao.getGameDetails(id).firstOrNull()
+        if (cached != null) {
+            emit(
+                Result.success(
+                    GameDetailsResponse(
+                        id = cached.id,
+                        name = cached.name,
+                        description = cached.description,
+                        backgroundImage = cached.backgroundImage
+                    )
+                )
+            )
+        }
+
+        // 2. Try API
+        val apiResult = api.getGameDetails(id)
+
+        apiResult.fold(
+            onSuccess = { response ->
+                // 3. Save to DB only if user opened
+                val entity = GameDetailsEntity(
+                    id = response.id,
+                    name = response.name,
+                    description = response.description,
+                    backgroundImage = response.backgroundImage
+                )
+                dao.insertGameDetails(entity)
+
+                emit(Result.success(response))
+            },
+            onFailure = { e ->
+                // 4. If DB existed → emit success using DB fallback
+                if (cached != null) {
+                    emit(
+                        Result.success(
+                            GameDetailsResponse(
+                                id = cached.id,
+                                name = cached.name,
+                                description = cached.description,
+                                backgroundImage = cached.backgroundImage
+                            )
+                        )
+                    )
+                } else {
+                    emit(Result.failure(e))
+                }
+            }
+        )
     }
 
-    override fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>> = flow {
-        emit(api.getGameDetails(id))
-    }
+    override fun observeGameDetails(id: Int): Flow<GameDetailsEntity?> =
+        dao.getGameDetails(id)
 
     override fun searchGames(query: String): Flow<Result<GameResponse>> = flow {
         try {

@@ -16,3 +16,11 @@ data class WishlistEntity(
     val name: String,
     val backgroundImage: String?
 )
+
+@Entity(tableName = "game_details")
+data class GameDetailsEntity(
+    @PrimaryKey val id: Int,
+    val name: String,
+    val description: String,
+    val backgroundImage: String?
+)
