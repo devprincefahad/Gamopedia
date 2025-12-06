@@ -1,5 +1,6 @@
 package dev.prince.gamopedia.repo
 
+import co.touchlab.kermit.Logger
 import dev.prince.gamopedia.database.GameDetailsEntity
 import dev.prince.gamopedia.database.GameEntity
 import dev.prince.gamopedia.database.GamesDao
@@ -23,6 +24,7 @@ class GamesRepositoryImpl(
         // 1. Emit cached DB first
         val cached = dao.getGameDetails(id).firstOrNull()
         if (cached != null) {
+            Logger.d { "Cache hit for game $id → Emitting cached details" }
             emit(
                 Result.success(
                     GameDetailsResponse(
@@ -33,6 +35,8 @@ class GamesRepositoryImpl(
                     )
                 )
             )
+        } else{
+            Logger.d { "No cached details found for game $id" }
         }
 
         // 2. Try API
@@ -53,6 +57,8 @@ class GamesRepositoryImpl(
             },
             onFailure = { e ->
                 // 4. If DB existed → emit success using DB fallback
+                Logger.e(e) { "API failed for game $id" }
+
                 if (cached != null) {
                     emit(
                         Result.success(
@@ -101,7 +107,9 @@ class GamesRepositoryImpl(
                 dao.clearGames()
                 dao.insertGames(entities)
             },
-            onFailure = { /* log error */ }
+            onFailure = {
+                Logger.e("Failed to refresh games", it)
+            }
         )
     }
 
