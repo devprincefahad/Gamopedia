@@ -1,10 +1,9 @@
 package dev.prince.gamopedia.repo
 
+import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
-import dev.prince.gamopedia.network.ApiService
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 interface GamesRepository {
 
@@ -14,27 +13,16 @@ interface GamesRepository {
 
     fun searchGames(query: String): Flow<Result<GameResponse>>
 
-}
+    fun observeGames(): Flow<List<dev.prince.gamopedia.model.Result>>
 
-class GamesRepositoryImpl(
-    private val api: ApiService
-) : GamesRepository {
+    suspend fun refreshGames()
 
-    override fun getGames(): Flow<Result<GameResponse>> = flow {
-        emit(api.getGames())
-    }
+    fun observeWishlist(): Flow<List<WishlistEntity>>
 
-    override fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>> = flow {
-        emit(api.getGameDetails(id))
-    }
+    fun isWishlisted(id: Int): Flow<Boolean>
 
-    override fun searchGames(query: String): Flow<Result<GameResponse>> = flow {
-        try {
-            val response = api.searchGames(query)
-            emit(Result.success(response))
-        } catch (e: Exception) {
-            emit(Result.failure(e))
-        }
-    }
+    suspend fun addToWishlist(item: WishlistEntity)
+
+    suspend fun removeFromWishlist(item: WishlistEntity)
 
 }

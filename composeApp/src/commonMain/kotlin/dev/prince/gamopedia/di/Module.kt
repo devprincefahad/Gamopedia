@@ -1,11 +1,13 @@
 package dev.prince.gamopedia.di
 
+import dev.prince.gamopedia.database.GamesDatabase
 import dev.prince.gamopedia.network.ApiService
 import dev.prince.gamopedia.network.KtorClient
 import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.repo.GamesRepositoryImpl
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import dev.prince.gamopedia.viewmodels.SearchViewModel
+import dev.prince.gamopedia.viewmodels.WishListViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -20,6 +22,8 @@ val sharedModule = module {
         ApiService(httpClient = KtorClient.getInstance())
     }
 
+    single { get<GamesDatabase>().gamesDao() }
+
     singleOf(::GamesRepositoryImpl).bind<GamesRepository>()
 
     viewModel {
@@ -29,4 +33,9 @@ val sharedModule = module {
     viewModel {
         SearchViewModel(repository = get())
     }
+
+    viewModel {
+        WishListViewModel(repository = get())
+    }
+
 }

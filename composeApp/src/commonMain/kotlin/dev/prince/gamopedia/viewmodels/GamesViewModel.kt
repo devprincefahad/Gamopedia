@@ -2,15 +2,16 @@ package dev.prince.gamopedia.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.prince.gamopedia.repo.GamesRepositoryImpl
+import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.util.GameDetailsUiState
 import dev.prince.gamopedia.util.GamesUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class GamesViewModel(
-    private val repository: GamesRepositoryImpl
+    private val repository: GamesRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<GamesUiState>(GamesUiState.Loading)
@@ -20,22 +21,32 @@ class GamesViewModel(
     val detailsState: StateFlow<GameDetailsUiState> = _detailsState
 
     init {
-        fetchGames()
+        observeGames()
+        refreshGames()
     }
 
-    private fun fetchGames() {
+    private fun observeGames() {
         viewModelScope.launch {
-            _uiState.value = GamesUiState.Loading
-
-            repository.getGames().collect { result ->
-                result.fold(
-                    onSuccess = { response ->
-                        _uiState.value = GamesUiState.Success(response.results)
-                    },
-                    onFailure = { error ->
-                        _uiState.value = GamesUiState.Error(error.message ?: "Unknown error")
+            repository.observeGames()
+                .onStart { _uiState.value = GamesUiState.Loading }
+                .collect { games ->
+                    if (games.isEmpty()) {
+                        _uiState.value = GamesUiState.Loading
+                    } else {
+                        _uiState.value = GamesUiState.Success(games)
                     }
-                )
+                }
+        }
+    }
+
+    private fun refreshGames() {
+        viewModelScope.launch {
+            try {
+                repository.refreshGames()
+            } catch (e: Exception) {
+                if (_uiState.value is GamesUiState.Loading) {
+                    _uiState.value = GamesUiState.Error(e.message ?: "Failed to refresh games")
+                }
             }
         }
     }

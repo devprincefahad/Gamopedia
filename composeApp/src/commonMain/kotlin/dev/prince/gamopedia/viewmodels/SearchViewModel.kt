@@ -2,6 +2,7 @@ package dev.prince.gamopedia.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.repo.GamesRepositoryImpl
 import dev.prince.gamopedia.util.SearchUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val repository: GamesRepositoryImpl
+    private val repository: GamesRepository
 ): ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
@@ -51,7 +52,5 @@ class SearchViewModel(
             )
         }
     }
-
-
 
 }
