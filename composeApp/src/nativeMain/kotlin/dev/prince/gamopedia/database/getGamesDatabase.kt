@@ -8,7 +8,7 @@ fun getGamesDatabase(): GamesDatabase {
     val dbFile = NSHomeDirectory() + "/games.db"
     return Room.databaseBuilder<GamesDatabase>(
         name = dbFile,
-        factory = { GamesDatabase::class.instantiateImpl() }
+   //factory = { GamesDatabase::class.instantiateImpl() }
     )
         .setDriver(BundledSQLiteDriver())
         .build()

@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -23,8 +22,11 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
+            export(libs.androidx.lifecycle.viewmodel)
             baseName = "ComposeApp"
             isStatic = true
+            // Required when using NativeSQLiteDriver
+            linkerOpts.add("-lsqlite3")
         }
     }
     
@@ -103,13 +105,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
 dependencies {
     debugImplementation(compose.uiTooling)
 
-    ksp(libs.room.compiler)
+   ksp(libs.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
