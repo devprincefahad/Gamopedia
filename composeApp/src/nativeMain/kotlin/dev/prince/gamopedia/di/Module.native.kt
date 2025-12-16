@@ -1,14 +1,13 @@
 package dev.prince.gamopedia.di
 
-import dev.prince.gamopedia.NetworkMonitorIOS
+import dev.prince.gamopedia.IosNetworkObserver
 import dev.prince.gamopedia.database.GamesDatabase
 import dev.prince.gamopedia.database.getGamesDatabase
-import dev.prince.gamopedia.network.NetworkMonitor
+import dev.prince.gamopedia.network.NetworkObserver
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import dev.prince.gamopedia.viewmodels.SearchViewModel
 import dev.prince.gamopedia.viewmodels.WishListViewModel
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -17,5 +16,5 @@ actual val platformModule: Module = module {
     viewModelOf(::SearchViewModel)
     viewModelOf(::WishListViewModel)
     single<GamesDatabase>{ getGamesDatabase() }
-    single<NetworkMonitor> { NetworkMonitorIOS() }
+    single<NetworkObserver> { IosNetworkObserver() }
 }

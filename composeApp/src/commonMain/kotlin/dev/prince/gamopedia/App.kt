@@ -32,7 +32,7 @@ fun App() {
 //        }
 
         val viewModel: GamesViewModel = koinViewModel()
-        val isConnected by viewModel.isConnected.collectAsState()
+        val isConnected by viewModel.status.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
 
         LaunchedEffect(isConnected) {

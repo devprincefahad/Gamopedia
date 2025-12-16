@@ -2,7 +2,7 @@ package dev.prince.gamopedia.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.prince.gamopedia.network.NetworkMonitor
+import dev.prince.gamopedia.network.NetworkObserver
 import dev.prince.gamopedia.network.NetworkStatus
 import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.util.GameDetailsUiState
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class GamesViewModel(
     private val repository: GamesRepository,
-    networkMonitor: NetworkMonitor
+    private val networkObserver: NetworkObserver
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<GamesUiState>(GamesUiState.Loading)
@@ -26,18 +26,18 @@ class GamesViewModel(
     private val _detailsState = MutableStateFlow<GameDetailsUiState>(GameDetailsUiState.Loading)
     val detailsState: StateFlow<GameDetailsUiState> = _detailsState
 
-    val isConnected = networkMonitor.networkStatus
-        .map { it == NetworkStatus.Available }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = true
-        )
-
     init {
         observeGames()
         refreshGames()
     }
+
+    val status: StateFlow<Boolean> = networkObserver.observe()
+        .map { it == NetworkStatus.Available }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
 
     private fun observeGames() {
         viewModelScope.launch {
