@@ -1,5 +1,6 @@
 package dev.prince.gamopedia.ui.wishlist
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.prince.gamopedia.components.GameItem
 import dev.prince.gamopedia.navigation.GameDetailsScreen
+import dev.prince.gamopedia.util.backgroundGradient
 import dev.prince.gamopedia.viewmodels.WishListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -24,28 +26,36 @@ fun WishListScreenContent(
     val navigator = LocalNavigator.current
 
     val wishlist by viewModel.wishlist.collectAsState()
-
-    if (wishlist.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Your wishlist is empty️")
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundGradient)
+    ) {
+        if (wishlist.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Your wishlist is empty️")
+            }
+            return
         }
-        return
-    }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(wishlist) { item ->
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(wishlist) { item ->
 
-            GameItem(
-                game = dev.prince.gamopedia.model.Result(
-                    id = item.id,
-                    name = item.name,
-                    backgroundImage = item.backgroundImage
-                ),
-                onClick = { navigator?.push(GameDetailsScreen(item.id)) }
-            )
+                GameItem(
+                    game = dev.prince.gamopedia.model.Result(
+                        id = item.id,
+                        name = item.name,
+                        backgroundImage = item.backgroundImage,
+//                    released = item.,
+//                    rating = null,
+//                    genres = emptyList()
+                    ),
+                    onClick = { navigator?.push(GameDetailsScreen(item.id)) }
+                )
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ package dev.prince.gamopedia.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,6 +30,7 @@ import dev.prince.gamopedia.components.TopGameItem
 import dev.prince.gamopedia.navigation.GameDetailsScreen
 import dev.prince.gamopedia.navigation.GenreGamesScreen
 import dev.prince.gamopedia.util.GamesUiState
+import dev.prince.gamopedia.util.backgroundGradient
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -46,13 +45,6 @@ fun HomeScreenContent(
 
     val navigator = LocalNavigator.current
 
-    val backgroundGradient = Brush.verticalGradient(
-        colorStops = arrayOf(
-            0.0f to Color(0xFF230F49),
-            0.5f to Color(0xFF000000)
-        )
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +58,6 @@ fun HomeScreenContent(
 
             item { Spacer(Modifier.height(32.dp)) }
 
-            // ---------- Categories ----------
             item {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
@@ -93,7 +84,6 @@ fun HomeScreenContent(
                 }
             }
 
-            // ---------- Top Games ----------
             item {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
@@ -128,7 +118,6 @@ fun HomeScreenContent(
                 }
             }
 
-            // ---------- Best of All Time ----------
             item {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
