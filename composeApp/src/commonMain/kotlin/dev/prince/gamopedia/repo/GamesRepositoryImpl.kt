@@ -105,7 +105,10 @@ class GamesRepositoryImpl(
                     GameEntity(
                         id = dto.id,
                         name = dto.name,
-                        backgroundImage = dto.backgroundImage
+                        backgroundImage = dto.backgroundImage,
+                        released = dto.released,
+                        rating = dto.rating,
+                        genre = dto.genres.firstOrNull()?.name
                     )
                 }
                 dao.clearGames()

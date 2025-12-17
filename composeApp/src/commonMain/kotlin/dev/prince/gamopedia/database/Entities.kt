@@ -7,7 +7,10 @@ import androidx.room.PrimaryKey
 data class GameEntity(
     @PrimaryKey val id: Int,
     val name: String,
-    val backgroundImage: String?
+    val backgroundImage: String?,
+    val released: String?,
+    val rating: Double?,
+    val genre: String?
 )
 
 @Entity(tableName = "wishlist")

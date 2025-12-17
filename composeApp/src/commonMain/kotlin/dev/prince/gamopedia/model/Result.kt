@@ -8,5 +8,8 @@ data class Result(
     var id: Int,
     var name: String,
     @SerialName("background_image")
-    var backgroundImage: String? = null
+    var backgroundImage: String? = null,
+    val released: String? = null,
+    val rating: Double? = null,
+    val genres: List<Genre> = emptyList()
 )

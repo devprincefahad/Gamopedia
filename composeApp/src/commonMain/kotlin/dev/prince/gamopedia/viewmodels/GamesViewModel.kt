@@ -15,6 +15,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class GamesViewModel(
     private val repository: GamesRepository,
@@ -33,6 +40,10 @@ class GamesViewModel(
     private val _gamesByGenre =
         MutableStateFlow<GamesUiState>(GamesUiState.Loading)
     val gamesByGenre: StateFlow<GamesUiState> = _gamesByGenre
+
+    private val _topRatedGames =
+        MutableStateFlow<GamesUiState>(GamesUiState.Loading)
+    val topRatedGames: StateFlow<GamesUiState> = _topRatedGames
 
     init {
         observeGenres()
@@ -53,13 +64,27 @@ class GamesViewModel(
     private fun observeGames() {
         viewModelScope.launch {
             repository.observeGames()
-                .onStart { _uiState.value = GamesUiState.Loading }
+                .onStart { _uiState.value = GamesUiState.Loading
+                    _topRatedGames.value = GamesUiState.Loading}
                 .collect { games ->
                     if (games.isEmpty()) {
                         _uiState.value = GamesUiState.Loading
-                    } else {
-                        _uiState.value = GamesUiState.Success(games)
+                        _topRatedGames.value = GamesUiState.Loading
+                        return@collect
                     }
+
+                    _uiState.value = GamesUiState.Success(games)
+
+                    val topRatedGames = games
+                        .filter { it.rating != null }
+                        .sortedByDescending { it.rating }
+                        .take(20)
+
+                    _topRatedGames.value =
+                        if (topRatedGames.isEmpty())
+                            GamesUiState.Error("No recent releases")
+                        else
+                            GamesUiState.Success(topRatedGames)
                 }
         }
     }
@@ -125,4 +150,29 @@ class GamesViewModel(
             }
         }
     }
+
+    @OptIn(ExperimentalTime::class)
+    private fun isRecentlyReleased(
+        released: String?,
+        months: Int = 6
+    ): Boolean {
+        if (released.isNullOrBlank()) return false
+
+        return try {
+            val releaseDate = LocalDate.parse(released)
+
+            val today = Clock.System
+                .now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .date
+
+            val cutoff = today.minus(DatePeriod(months = months))
+
+            releaseDate > cutoff
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
 }

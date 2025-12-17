@@ -70,6 +70,8 @@ kotlin {
             implementation(libs.kermit)
 
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.datetime)
+
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)
