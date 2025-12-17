@@ -2,6 +2,7 @@ package dev.prince.gamopedia.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.prince.gamopedia.database.GenreUiModel
 import dev.prince.gamopedia.network.NetworkObserver
 import dev.prince.gamopedia.network.NetworkStatus
 import dev.prince.gamopedia.repo.GamesRepository
@@ -26,7 +27,17 @@ class GamesViewModel(
     private val _detailsState = MutableStateFlow<GameDetailsUiState>(GameDetailsUiState.Loading)
     val detailsState: StateFlow<GameDetailsUiState> = _detailsState
 
+    private val _genres = MutableStateFlow<List<GenreUiModel>>(emptyList())
+    val genres: StateFlow<List<GenreUiModel>> = _genres
+
+    private val _gamesByGenre =
+        MutableStateFlow<GamesUiState>(GamesUiState.Loading)
+    val gamesByGenre: StateFlow<GamesUiState> = _gamesByGenre
+
     init {
+        observeGenres()
+        refreshGenres()
+
         observeGames()
         refreshGames()
     }
@@ -82,4 +93,36 @@ class GamesViewModel(
         }
     }
 
+    private fun observeGenres() {
+        viewModelScope.launch {
+            repository.observeGenres().collect {
+                _genres.value = it
+            }
+        }
+    }
+
+    private fun refreshGenres() {
+        viewModelScope.launch {
+            repository.refreshGenres()
+        }
+    }
+
+    fun fetchGamesByGenre(genreId: Int) {
+        viewModelScope.launch {
+            _gamesByGenre.value = GamesUiState.Loading
+
+            repository.getGamesByGenre(genreId).collect { result ->
+                result.fold(
+                    onSuccess = { response ->
+                        _gamesByGenre.value =
+                            GamesUiState.Success(response.results)
+                    },
+                    onFailure = {
+                        _gamesByGenre.value =
+                            GamesUiState.Error(it.message ?: "Error")
+                    }
+                )
+            }
+        }
+    }
 }

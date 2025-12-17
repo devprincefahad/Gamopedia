@@ -24,3 +24,22 @@ data class GameDetailsEntity(
     val description: String,
     val backgroundImage: String?
 )
+
+@Entity(tableName = "genres")
+data class GenreEntity(
+    @PrimaryKey val id: Int,
+    val name: String,
+    val imageBackground: String?
+)
+
+fun GenreEntity.toUiModel() = GenreUiModel(
+    id = id,
+    name = name,
+    imageBackground = imageBackground
+)
+
+data class GenreUiModel(
+    val id: Int,
+    val name: String,
+    val imageBackground: String?
+)

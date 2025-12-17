@@ -32,4 +32,13 @@ interface GamesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGameDetails(details: GameDetailsEntity)
+
+    @Query("SELECT * FROM genres")
+    fun observeGenres(): Flow<List<GenreEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGenres(genres: List<GenreEntity>)
+
+    @Query("DELETE FROM genres")
+    suspend fun clearGenres()
 }

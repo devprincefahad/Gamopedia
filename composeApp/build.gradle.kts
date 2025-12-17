@@ -68,6 +68,8 @@ kotlin {
             implementation(libs.voyager.transitions)
 
             implementation(libs.kermit)
+
+            implementation(libs.kotlinx.serialization.json)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)

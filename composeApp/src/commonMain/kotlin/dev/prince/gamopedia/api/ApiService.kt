@@ -2,12 +2,14 @@ package dev.prince.gamopedia.api
 
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
+import dev.prince.gamopedia.model.GamesByGenreResponse
+import dev.prince.gamopedia.model.GenreResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class ApiService (val httpClient: HttpClient) {
+class ApiService(val httpClient: HttpClient) {
 
     suspend fun getGames(): Result<GameResponse> {
         return try {
@@ -38,6 +40,25 @@ class ApiService (val httpClient: HttpClient) {
         return httpClient.get("api/games") {
             parameter("key", API_KEY)
             parameter("search", query)
+        }.body()
+    }
+
+    suspend fun getGenres(): Result<GenreResponse> {
+        return try {
+            val response = httpClient.get("api/genres") {
+                parameter("key", API_KEY)
+            }.body<GenreResponse>()
+
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getGamesByGenre(genreId: Int): GamesByGenreResponse {
+        return httpClient.get("api/games") {
+            parameter("key", API_KEY)
+            parameter("genres", genreId)
         }.body()
     }
 

@@ -8,6 +8,10 @@ import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.api.ApiService
+import dev.prince.gamopedia.database.GenreEntity
+import dev.prince.gamopedia.database.GenreUiModel
+import dev.prince.gamopedia.database.toUiModel
+import dev.prince.gamopedia.model.GamesByGenreResponse
 import dev.prince.gamopedia.util.toResultModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,7 +39,7 @@ class GamesRepositoryImpl(
                     )
                 )
             )
-        } else{
+        } else {
             Logger.d { "No cached details found for game $id" }
         }
 
@@ -124,5 +128,40 @@ class GamesRepositoryImpl(
 
     override suspend fun removeFromWishlist(item: WishlistEntity) =
         dao.removeFromWishlist(item)
+
+    override fun observeGenres(): Flow<List<GenreUiModel>> =
+        dao.observeGenres()
+            .map { it.map { entity -> entity.toUiModel() } }
+            .distinctUntilChanged()
+
+    override suspend fun refreshGenres() {
+        api.getGenres().fold(
+            onSuccess = { response ->
+                val entities = response.results.map {
+                    GenreEntity(
+                        id = it.id,
+                        name = it.name,
+                        imageBackground = it.backgroundImage
+                    )
+                }
+                dao.clearGenres()
+                dao.insertGenres(entities)
+            },
+            onFailure = {
+                Logger.e(it) { "Failed to refresh genres" }
+            }
+        )
+    }
+
+    override fun getGamesByGenre(
+        genreId: Int
+    ): Flow<Result<GamesByGenreResponse>> = flow {
+        try {
+            val response = api.getGamesByGenre(genreId)
+            emit(Result.success(response))
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
 
 }
