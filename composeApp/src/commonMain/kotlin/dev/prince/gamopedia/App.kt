@@ -1,5 +1,8 @@
 package dev.prince.gamopedia
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,29 +42,40 @@ fun App() {
         val isConnected by viewModel.status.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
 
+        var isVisible by remember { mutableStateOf(true) }
+        val homeTab = remember {
+            HomeTab(
+                onNavigator = { isVisible = it }
+            )
+        }
         LaunchedEffect(isConnected) {
             if (!isConnected) {
                 snackbarHostState.showSnackbar("You're offline")
-            }
-            else {
+            } else {
                 Logger.d("Online")
             }
         }
 
-        TabNavigator(HomeTab) {
+        TabNavigator(homeTab) {
 
             Scaffold(
                 snackbarHost = {
                     SnackbarHost(snackbarHostState)
                 },
                 bottomBar = {
-                    NavigationBar(
-                        containerColor = Color(0xFF2A2A2A),
-                        tonalElevation = 10.dp
+                    AnimatedVisibility(
+                        visible = isVisible,
+                        enter = slideInVertically { height -> height },
+                        exit = slideOutVertically { height -> height }
                     ) {
-                        TabNavigationItem(HomeTab)
-                        TabNavigationItem(SearchTab)
-                        TabNavigationItem(WishListTab)
+                        NavigationBar(
+                            containerColor = Color(0xFF2A2A2A),
+                            tonalElevation = 10.dp
+                        ) {
+                            TabNavigationItem(homeTab)
+                            TabNavigationItem(SearchTab)
+                            TabNavigationItem(WishListTab)
+                        }
                     }
                 }
             ) {
@@ -80,7 +94,7 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
     NavigationBarItem(
         selected = tabNavigator.current == tab,
         onClick = { tabNavigator.current = tab },
-        label = { Text(tab.options.title,color = NeonLime) },
+        label = { Text(tab.options.title, color = NeonLime) },
         icon = {
             tab.options.icon?.let {
                 Icon(painter = it, contentDescription = tab.options.title)
