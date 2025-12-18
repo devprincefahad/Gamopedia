@@ -4,6 +4,7 @@ import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.model.GamesByGenreResponse
 import dev.prince.gamopedia.model.GenreResponse
+import dev.prince.gamopedia.model.ScreenshotsResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -60,6 +61,20 @@ class ApiService(val httpClient: HttpClient) {
             parameter("key", API_KEY)
             parameter("genres", genreId)
         }.body()
+    }
+
+    suspend fun getGameScreenshots(
+        id: Int
+    ): Result<ScreenshotsResponse> {
+        return try {
+            val response = httpClient.get("api/games/$id/screenshots") {
+                parameter("key", API_KEY)
+            }.body<ScreenshotsResponse>()
+
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     companion object {

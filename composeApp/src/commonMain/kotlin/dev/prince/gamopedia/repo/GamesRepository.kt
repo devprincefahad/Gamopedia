@@ -2,10 +2,12 @@ package dev.prince.gamopedia.repo
 
 import dev.prince.gamopedia.database.GameDetailsEntity
 import dev.prince.gamopedia.database.GenreUiModel
+import dev.prince.gamopedia.database.ScreenshotEntity
 import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.model.GamesByGenreResponse
+import dev.prince.gamopedia.model.ScreenshotDto
 import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
@@ -33,5 +35,9 @@ interface GamesRepository {
     suspend fun refreshGenres()
 
     fun getGamesByGenre(genreId: Int): Flow<Result<GamesByGenreResponse>>
+
+    fun getGameScreenshots(id: Int): Flow<Result<List<ScreenshotDto>>>
+
+    fun observeScreenshots(id: Int): Flow<List<ScreenshotEntity>>
 
 }

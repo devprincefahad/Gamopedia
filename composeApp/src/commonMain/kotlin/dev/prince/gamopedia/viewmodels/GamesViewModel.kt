@@ -3,6 +3,7 @@ package dev.prince.gamopedia.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.prince.gamopedia.database.GenreUiModel
+import dev.prince.gamopedia.model.ScreenshotDto
 import dev.prince.gamopedia.network.NetworkObserver
 import dev.prince.gamopedia.network.NetworkStatus
 import dev.prince.gamopedia.repo.GamesRepository
@@ -11,6 +12,7 @@ import dev.prince.gamopedia.util.GamesUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -44,7 +46,17 @@ class GamesViewModel(
     private val _topRatedGames =
         MutableStateFlow<GamesUiState>(GamesUiState.Loading)
     val topRatedGames: StateFlow<GamesUiState> = _topRatedGames
+    private val _screenshots =
+        MutableStateFlow<Result<List<ScreenshotDto>>?>(null)
 
+    val screenshots = _screenshots.asStateFlow()
+
+    fun loadScreenshots(gameId: Int) {
+        viewModelScope.launch {
+            repository.getGameScreenshots(gameId)
+                .collect { _screenshots.value = it }
+        }
+    }
     init {
         observeGenres()
         refreshGenres()

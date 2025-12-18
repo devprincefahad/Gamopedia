@@ -10,5 +10,9 @@ data class GameDetailsResponse(
     @SerialName("description_raw")
     val description: String,
     @SerialName("background_image")
-    val backgroundImage: String? = null
+    val backgroundImage: String? = null,
+    val website: String,
+    val rating: Double?,
+    @SerialName("parent_platforms")
+    val parentPlatforms: List<ParentPlatform> = emptyList()
 )

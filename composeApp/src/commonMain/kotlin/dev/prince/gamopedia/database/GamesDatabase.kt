@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 
 @Database(
-    entities = [GameEntity::class, WishlistEntity::class, GameDetailsEntity::class, GenreEntity::class],
+    entities = [GameEntity::class, WishlistEntity::class, GameDetailsEntity::class, GenreEntity::class, ScreenshotEntity::class],
     version = 1,
     exportSchema = false
 )

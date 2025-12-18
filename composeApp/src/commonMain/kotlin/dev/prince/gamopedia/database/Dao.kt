@@ -41,4 +41,13 @@ interface GamesDao {
 
     @Query("DELETE FROM genres")
     suspend fun clearGenres()
+
+    @Query("SELECT * FROM game_screenshots WHERE gameId = :gameId")
+    fun observeScreenshots(gameId: Int): Flow<List<ScreenshotEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertScreenshots(screenshots: List<ScreenshotEntity>)
+
+    @Query("DELETE FROM game_screenshots WHERE gameId = :gameId")
+    suspend fun clearScreenshots(gameId: Int)
 }

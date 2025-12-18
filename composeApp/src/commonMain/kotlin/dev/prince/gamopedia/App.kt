@@ -48,6 +48,11 @@ fun App() {
                 onNavigator = { isVisible = it }
             )
         }
+        val wishListTab = remember {
+            WishListTab(
+                onNavigator = { isVisible = it }
+            )
+        }
         LaunchedEffect(isConnected) {
             if (!isConnected) {
                 snackbarHostState.showSnackbar("You're offline")
@@ -74,7 +79,7 @@ fun App() {
                         ) {
                             TabNavigationItem(homeTab)
                             TabNavigationItem(SearchTab)
-                            TabNavigationItem(WishListTab)
+                            TabNavigationItem(wishListTab)
                         }
                     }
                 }

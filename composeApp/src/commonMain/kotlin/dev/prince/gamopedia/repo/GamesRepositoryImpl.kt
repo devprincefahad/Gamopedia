@@ -10,13 +10,20 @@ import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.api.ApiService
 import dev.prince.gamopedia.database.GenreEntity
 import dev.prince.gamopedia.database.GenreUiModel
+import dev.prince.gamopedia.database.ScreenshotEntity
 import dev.prince.gamopedia.database.toUiModel
 import dev.prince.gamopedia.model.GamesByGenreResponse
+import dev.prince.gamopedia.model.ParentPlatform
+import dev.prince.gamopedia.model.Platform
+import dev.prince.gamopedia.model.ScreenshotDto
 import dev.prince.gamopedia.util.toResultModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class GamesRepositoryImpl(
@@ -35,7 +42,21 @@ class GamesRepositoryImpl(
                         id = cached.id,
                         name = cached.name,
                         description = cached.description,
-                        backgroundImage = cached.backgroundImage
+                        backgroundImage = cached.backgroundImage,
+                        website = cached.website,
+                        rating = cached.rating,
+                        parentPlatforms = cached.platforms
+                            ?.split(", ")
+                            ?.map {
+                                ParentPlatform(
+                                    Platform(
+                                        id = -1,
+                                        name = it,
+                                        slug = it.lowercase()
+                                    )
+                                )
+                            }
+                            ?: emptyList()
                     )
                 )
             )
@@ -53,7 +74,10 @@ class GamesRepositoryImpl(
                     id = response.id,
                     name = response.name,
                     description = response.description,
-                    backgroundImage = response.backgroundImage
+                    backgroundImage = response.backgroundImage,
+                    website = response.website,
+                    rating = response.rating,
+                    platforms = response.parentPlatforms.joinToString(", ") { it.platform.name }
                 )
                 dao.insertGameDetails(entity)
 
@@ -70,7 +94,20 @@ class GamesRepositoryImpl(
                                 id = cached.id,
                                 name = cached.name,
                                 description = cached.description,
-                                backgroundImage = cached.backgroundImage
+                                backgroundImage = cached.backgroundImage,
+                                website = cached.website,
+                                rating = cached.rating,
+                                parentPlatforms = cached.platforms?.split(", ")
+                                    ?.map {
+                                        ParentPlatform(
+                                            Platform(
+                                                id = -1,
+                                                name = it,
+                                                slug = it.lowercase()
+                                            )
+                                        )
+                                    }
+                                    ?: emptyList()
                             )
                         )
                     )
@@ -166,5 +203,50 @@ class GamesRepositoryImpl(
             emit(Result.failure(e))
         }
     }
+
+    override fun getGameScreenshots(
+        id: Int
+    ): Flow<Result<List<ScreenshotDto>>> = flow {
+
+        val cached = dao.observeScreenshots(id).firstOrNull()
+
+        if (!cached.isNullOrEmpty()) {
+            emit(
+                Result.success(
+                    cached.map { ScreenshotDto(it.id, it.image) }
+                )
+            )
+        }
+
+        val apiResult = api.getGameScreenshots(id)
+
+        apiResult.fold(
+            onSuccess = { response ->
+
+                val entities = response.results.map {
+                    ScreenshotEntity(
+                        id = it.id,
+                        gameId = id,
+                        image = it.image
+                    )
+                }
+
+                dao.clearScreenshots(id)
+                dao.insertScreenshots(entities)
+
+                emit(Result.success(response.results))
+            },
+            onFailure = { e ->
+                if (cached.isNullOrEmpty()) {
+                    emit(Result.failure(e))
+                }
+            }
+        )
+    }
+        .flowOn(Dispatchers.IO)
+
+    override fun observeScreenshots(id: Int): Flow<List<ScreenshotEntity>> =
+        dao.observeScreenshots(id)
+
 
 }

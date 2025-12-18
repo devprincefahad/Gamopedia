@@ -25,7 +25,10 @@ data class GameDetailsEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val description: String,
-    val backgroundImage: String?
+    val backgroundImage: String?,
+    val website: String,
+    val rating: Double?,
+    val platforms: String?
 )
 
 @Entity(tableName = "genres")
@@ -33,6 +36,13 @@ data class GenreEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val imageBackground: String?
+)
+
+@Entity(tableName = "game_screenshots")
+data class ScreenshotEntity(
+    @PrimaryKey val id: Int,
+    val gameId: Int,
+    val image: String
 )
 
 fun GenreEntity.toUiModel() = GenreUiModel(
