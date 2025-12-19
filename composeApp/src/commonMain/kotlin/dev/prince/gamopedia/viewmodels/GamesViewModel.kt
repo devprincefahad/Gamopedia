@@ -2,7 +2,7 @@ package dev.prince.gamopedia.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.prince.gamopedia.database.GenreUiModel
+import dev.prince.gamopedia.model.Genre
 import dev.prince.gamopedia.model.ScreenshotDto
 import dev.prince.gamopedia.network.NetworkObserver
 import dev.prince.gamopedia.network.NetworkStatus
@@ -36,8 +36,8 @@ class GamesViewModel(
     private val _detailsState = MutableStateFlow<GameDetailsUiState>(GameDetailsUiState.Loading)
     val detailsState: StateFlow<GameDetailsUiState> = _detailsState
 
-    private val _genres = MutableStateFlow<List<GenreUiModel>>(emptyList())
-    val genres: StateFlow<List<GenreUiModel>> = _genres
+    private val _genres = MutableStateFlow<List<Genre>>(emptyList())
+    val genres: StateFlow<List<Genre>> = _genres
 
     private val _gamesByGenre =
         MutableStateFlow<GamesUiState>(GamesUiState.Loading)

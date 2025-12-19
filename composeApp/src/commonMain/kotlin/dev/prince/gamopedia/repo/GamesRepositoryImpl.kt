@@ -4,19 +4,19 @@ import co.touchlab.kermit.Logger
 import dev.prince.gamopedia.database.GameDetailsEntity
 import dev.prince.gamopedia.database.GameEntity
 import dev.prince.gamopedia.database.GamesDao
-import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.api.ApiService
 import dev.prince.gamopedia.database.GenreEntity
-import dev.prince.gamopedia.database.GenreUiModel
 import dev.prince.gamopedia.database.ScreenshotEntity
-import dev.prince.gamopedia.database.toUiModel
+import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GamesByGenreResponse
+import dev.prince.gamopedia.model.Genre
 import dev.prince.gamopedia.model.ParentPlatform
 import dev.prince.gamopedia.model.Platform
 import dev.prince.gamopedia.model.ScreenshotDto
 import dev.prince.gamopedia.util.toResultModel
+import dev.prince.gamopedia.util.toGenreModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -169,9 +169,9 @@ class GamesRepositoryImpl(
     override suspend fun removeFromWishlist(item: WishlistEntity) =
         dao.removeFromWishlist(item)
 
-    override fun observeGenres(): Flow<List<GenreUiModel>> =
+    override fun observeGenres(): Flow<List<Genre>> =
         dao.observeGenres()
-            .map { it.map { entity -> entity.toUiModel() } }
+            .map { it.map { entity -> entity.toGenreModel() } }
             .distinctUntilChanged()
 
     override suspend fun refreshGenres() {

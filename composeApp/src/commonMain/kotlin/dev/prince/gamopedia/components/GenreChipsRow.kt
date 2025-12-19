@@ -8,12 +8,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.prince.gamopedia.database.GenreUiModel
+import dev.prince.gamopedia.model.Genre
 
 @Composable
 fun GenreChipsRow(
-    genres: List<GenreUiModel>,
-    onGenreClick: (GenreUiModel) -> Unit
+    genres: List<Genre>,
+    onGenreClick: (Genre) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),

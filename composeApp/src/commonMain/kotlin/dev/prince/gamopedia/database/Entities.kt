@@ -44,15 +44,3 @@ data class ScreenshotEntity(
     val gameId: Int,
     val image: String
 )
-
-fun GenreEntity.toUiModel() = GenreUiModel(
-    id = id,
-    name = name,
-    imageBackground = imageBackground
-)
-
-data class GenreUiModel(
-    val id: Int,
-    val name: String,
-    val imageBackground: String?
-)

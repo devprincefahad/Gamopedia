@@ -11,9 +11,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.prince.gamopedia.components.GameItem
 import dev.prince.gamopedia.navigation.GameDetailsScreen
+import dev.prince.gamopedia.util.WishlistUiState
 import dev.prince.gamopedia.util.backgroundGradient
 import dev.prince.gamopedia.viewmodels.WishListViewModel
 import org.koin.compose.viewmodel.koinViewModel

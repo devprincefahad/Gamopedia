@@ -21,3 +21,10 @@ sealed class SearchUiState {
     data class Success(val data: List<Result>) : SearchUiState()
     data class Error(val message: String) : SearchUiState()
 }
+
+sealed interface WishlistUiState {
+    object Loading : WishlistUiState
+    object Empty : WishlistUiState
+    data class Success(val data: List<Result>) : WishlistUiState
+}
+
