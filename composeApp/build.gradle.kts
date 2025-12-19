@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.codingfeline.buildkonfig.compiler.FieldSpec
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,6 +10,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
+    id("com.codingfeline.buildkonfig") version "+"
 }
 
 kotlin {
@@ -83,6 +86,19 @@ kotlin {
     }
 }
 
+buildkonfig {
+    packageName = "dev.prince.gamopedia.config"
+    defaultConfigs {
+        val apiKey = gradleLocalProperties(rootDir, providers)
+            .getProperty("API_KEY")
+
+        buildConfigField(
+            type = FieldSpec.Type.STRING,
+            name = "API_KEY",
+            value = apiKey
+        )
+    }
+}
 android {
     namespace = "dev.prince.gamopedia"
     compileSdk = libs.versions.android.compileSdk.get().toInt()

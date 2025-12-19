@@ -1,5 +1,6 @@
 package dev.prince.gamopedia.api
 
+import dev.prince.gamopedia.config.BuildKonfig.API_KEY
 import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.model.GamesByGenreResponse
@@ -75,10 +76,6 @@ class ApiService(val httpClient: HttpClient) {
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
-
-    companion object {
-        const val API_KEY = "1516e476943b4a8095bc09c465bb77e3"
     }
 
 }
