@@ -41,7 +41,7 @@ import coil3.compose.AsyncImage
 import dev.prince.gamopedia.components.ExpandableDescription
 import dev.prince.gamopedia.components.PlatformChips
 import dev.prince.gamopedia.components.ScreenshotsSection
-import dev.prince.gamopedia.database.WishlistEntity
+import dev.prince.gamopedia.database.GameEntity
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import dev.prince.gamopedia.util.GameDetailsUiState
 import dev.prince.gamopedia.util.backgroundGradient
@@ -148,13 +148,16 @@ fun GameDetailsContent(
 
                         IconButton(
                             onClick = {
-                                wishListViewModel.toggleWishlist(
-                                    WishlistEntity(
-                                        id = game.id,
-                                        name = game.name,
-                                        backgroundImage = game.backgroundImage ?: ""
-                                    )
+                                val gameEntity = GameEntity(
+                                    id = game.id,
+                                    name = game.name,
+                                    backgroundImage = game.backgroundImage,
+                                    released = null,
+                                    rating = game.rating,
+                                    genre = null
                                 )
+
+                                wishListViewModel.toggleWishlist(gameEntity)
                             },
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)

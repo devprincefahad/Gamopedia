@@ -163,28 +163,4 @@ class GamesViewModel(
         }
     }
 
-    @OptIn(ExperimentalTime::class)
-    private fun isRecentlyReleased(
-        released: String?,
-        months: Int = 6
-    ): Boolean {
-        if (released.isNullOrBlank()) return false
-
-        return try {
-            val releaseDate = LocalDate.parse(released)
-
-            val today = Clock.System
-                .now()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .date
-
-            val cutoff = today.minus(DatePeriod(months = months))
-
-            releaseDate > cutoff
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-
 }

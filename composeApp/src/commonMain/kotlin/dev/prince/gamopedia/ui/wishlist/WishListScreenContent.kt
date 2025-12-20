@@ -45,15 +45,21 @@ fun WishListScreenContent(
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(wishlist) { item ->
-
                 GameItem(
                     game = dev.prince.gamopedia.model.Result(
                         id = item.id,
                         name = item.name,
                         backgroundImage = item.backgroundImage,
-//                    released = item.,
-//                    rating = null,
-//                    genres = emptyList()
+                        released = item.released,
+                        rating = item.rating,
+                        genres = item.genre?.let { genreName ->
+                            listOf(
+                                dev.prince.gamopedia.model.Genre(
+                                    id = -1,
+                                    name = genreName
+                                )
+                            )
+                        } ?: emptyList()
                     ),
                     onClick = { navigator?.push(GameDetailsScreen(item.id)) }
                 )

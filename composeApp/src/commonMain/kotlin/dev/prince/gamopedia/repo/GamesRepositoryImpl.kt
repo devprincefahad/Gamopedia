@@ -9,7 +9,7 @@ import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.api.ApiService
 import dev.prince.gamopedia.database.GenreEntity
 import dev.prince.gamopedia.database.ScreenshotEntity
-import dev.prince.gamopedia.database.WishlistEntity
+import dev.prince.gamopedia.database.WishlistEntry
 import dev.prince.gamopedia.model.GamesByGenreResponse
 import dev.prince.gamopedia.model.Genre
 import dev.prince.gamopedia.model.ParentPlatform
@@ -156,18 +156,20 @@ class GamesRepositoryImpl(
             }
         )
     }
-
-    override fun observeWishlist(): Flow<List<WishlistEntity>> =
-        dao.getWishlist()
+    override fun observeWishlist(): Flow<List<GameEntity>> =
+        dao.getWishlistedGames()
 
     override fun isWishlisted(id: Int): Flow<Boolean> =
         dao.isWishlisted(id)
 
-    override suspend fun addToWishlist(item: WishlistEntity) =
-        dao.addToWishlist(item)
+    override suspend fun addToWishlist(game: GameEntity) {
+        dao.insertGames(listOf(game))
+        dao.insertWishlistEntry(WishlistEntry(gameId = game.id))
+    }
 
-    override suspend fun removeFromWishlist(item: WishlistEntity) =
-        dao.removeFromWishlist(item)
+    override suspend fun removeFromWishlist(id: Int) {
+        dao.deleteWishlistEntry(id)
+    }
 
     override fun observeGenres(): Flow<List<Genre>> =
         dao.observeGenres()

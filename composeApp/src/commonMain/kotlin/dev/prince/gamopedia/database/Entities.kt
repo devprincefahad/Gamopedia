@@ -13,11 +13,9 @@ data class GameEntity(
     val genre: String?
 )
 
-@Entity(tableName = "wishlist")
-data class WishlistEntity(
-    @PrimaryKey val id: Int,
-    val name: String,
-    val backgroundImage: String?
+@Entity(tableName = "wishlist_entries")
+data class WishlistEntry(
+    @PrimaryKey val gameId: Int
 )
 
 @Entity(tableName = "game_details")
