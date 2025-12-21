@@ -148,7 +148,6 @@ class GamesRepositoryImpl(
                         genre = dto.genres.firstOrNull()?.name
                     )
                 }
-                dao.clearGames()
                 dao.insertGames(entities)
             },
             onFailure = {
@@ -186,7 +185,6 @@ class GamesRepositoryImpl(
                         imageBackground = it.backgroundImage
                     )
                 }
-                dao.clearGenres()
                 dao.insertGenres(entities)
             },
             onFailure = {
@@ -233,7 +231,6 @@ class GamesRepositoryImpl(
                     )
                 }
 
-                dao.clearScreenshots(id)
                 dao.insertScreenshots(entities)
 
                 emit(Result.success(response.results))

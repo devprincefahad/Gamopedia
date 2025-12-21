@@ -4,10 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
+import dev.prince.gamopedia.components.AnimateIn
 import dev.prince.gamopedia.components.GameItem
 import dev.prince.gamopedia.components.GamingSearchBar
 import dev.prince.gamopedia.navigation.GameDetailsScreen
@@ -42,9 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SearchScreenContent(
     viewModel: SearchViewModel = koinViewModel()
 ) {
-
     val navigator = LocalNavigator.current
-
     val query by viewModel.searchQuery.collectAsState()
     val state by viewModel.searchState.collectAsState()
 
@@ -53,81 +56,108 @@ fun SearchScreenContent(
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
-
-        Column {
-
-            Text(
-                modifier = Modifier.padding(top = 42.dp, start = 16.dp),
-                text = "Search Games",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 80.dp
             )
+        ) {
 
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            item { Spacer(Modifier.height(42.dp)) }
 
-                Box(
-                    modifier = Modifier
-                        .shadow(
-                            elevation = 16.dp,
-                            shape = RoundedCornerShape(14.dp),
-                            ambientColor = Color(0xBCCFFF4A),
-                            spotColor = Color(0xA4CFFF4A)
-                        )
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                ) {
-                    GamingSearchBar(
-                        query = query,
-                        onQueryChange = viewModel::updateSearchQuery
+            item {
+                AnimateIn {
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = "Search Games",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
                     )
-
                 }
+            }
 
-                Spacer(Modifier.height(16.dp))
-
-                when (state) {
-                    SearchUiState.Idle -> {
-//                        Text(
-//                            modifier = Modifier
-//                                .padding(horizontal = 16.dp)
-//                                .align(Alignment.CenterHorizontally),
-//                            text = "Type to search games...",
-//                            fontSize = 16.sp,
-//                            fontWeight = FontWeight.Medium,
-//                            color = Color.White
-//                        )
-                    }
-
-                    SearchUiState.Loading -> {
-                        Box(Modifier.fillMaxSize(), Alignment.Center) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    is SearchUiState.Error -> {
-                        val msg = (state as SearchUiState.Error).message
-                        Text(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp),
-                            text = "Error: $msg"
+            item {
+                AnimateIn {
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .shadow(
+                                elevation = 16.dp,
+                                shape = RoundedCornerShape(14.dp),
+                                ambientColor = Color(0xBCCFFF4A),
+                                spotColor = Color(0xA4CFFF4A)
+                            )
+                    ) {
+                        GamingSearchBar(
+                            query = query,
+                            onQueryChange = viewModel::updateSearchQuery
                         )
                     }
+                }
+            }
 
-                    is SearchUiState.Success -> {
-                        val results = (state as SearchUiState.Success).data
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(results) { game ->
-                                GameItem(
-                                    game = game,
-                                    onClick = {
-                                        navigator?.push(GameDetailsScreen(game.id))
-                                    }
+            when (state) {
+                SearchUiState.Idle -> {
+                    item {
+                        AnimateIn {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Find your next adventure...",
+                                    color = Color.White.copy(alpha = 0.5f),
+                                    fontSize = 16.sp
                                 )
                             }
+                        }
+                    }
+                }
+
+                SearchUiState.Loading -> {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxSize()
+                                .padding(bottom = 100.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = Color.White)
+                        }
+                    }
+                }
+
+                is SearchUiState.Error -> {
+                    val msg = (state as SearchUiState.Error).message
+                    item {
+                        AnimateIn {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                text = "Error: $msg",
+                                color = Color.Red
+                            )
+                        }
+                    }
+                }
+
+                is SearchUiState.Success -> {
+                    val results = (state as SearchUiState.Success).data
+
+                    items(
+                        items = results,
+                        key = { it.id }
+                    ) { game ->
+                        AnimateIn {
+                            GameItem(
+                                game = game,
+                                onClick = {
+                                    navigator?.push(GameDetailsScreen(game.id))
+                                }
+                            )
                         }
                     }
                 }

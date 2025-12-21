@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,8 +18,13 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import cafe.adriel.voyager.transitions.SlideTransition
 import dev.prince.gamopedia.navigation.HomeScreen
 import dev.prince.gamopedia.navigation.SearchScreen
+import dev.prince.gamopedia.navigation.WishListScreen
+import kotlin.jvm.Transient
 
-object SearchTab : Tab {
+class SearchTab(
+    @Transient
+    val onNavigator: (isRoot: Boolean) -> Unit
+) : Tab {
 
     override val options: TabOptions
         @Composable
@@ -38,6 +44,9 @@ object SearchTab : Tab {
     @Composable
     override fun Content() {
         Navigator(SearchScreen()) {
+            LaunchedEffect(it.lastItem){
+                onNavigator(it.lastItem is SearchScreen)
+            }
             SlideTransition(it)
         }
     }

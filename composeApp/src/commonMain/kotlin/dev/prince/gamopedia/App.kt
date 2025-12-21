@@ -27,6 +27,7 @@ import dev.prince.gamopedia.tab.HomeTab
 import dev.prince.gamopedia.tab.SearchTab
 import dev.prince.gamopedia.tab.WishListTab
 import dev.prince.gamopedia.theme.googleSansTypography
+import dev.prince.gamopedia.util.GlowYellow
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -56,6 +57,11 @@ fun App() {
                 onNavigator = { isVisible = it }
             )
         }
+        val searchTab = remember {
+            SearchTab(
+                onNavigator = { isVisible = it }
+            )
+        }
         LaunchedEffect(isConnected) {
             if (!isConnected) {
                 snackbarHostState.showSnackbar("You're offline")
@@ -81,7 +87,7 @@ fun App() {
                             tonalElevation = 10.dp
                         ) {
                             TabNavigationItem(homeTab)
-                            TabNavigationItem(SearchTab)
+                            TabNavigationItem(searchTab)
                             TabNavigationItem(wishListTab)
                         }
                     }
@@ -97,22 +103,21 @@ fun App() {
 private fun RowScope.TabNavigationItem(tab: Tab) {
 
     val tabNavigator = LocalTabNavigator.current
-    val NeonLime = Color(0xFFD6FF4D)
 
     NavigationBarItem(
         selected = tabNavigator.current == tab,
         onClick = { tabNavigator.current = tab },
-        label = { Text(tab.options.title, color = NeonLime) },
+        label = { Text(tab.options.title, color = GlowYellow) },
         icon = {
             tab.options.icon?.let {
                 Icon(painter = it, contentDescription = tab.options.title)
             }
         },
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = NeonLime,
-            unselectedIconColor = NeonLime,
-            selectedTextColor = NeonLime,
-            unselectedTextColor = NeonLime,
+            selectedIconColor = GlowYellow,
+            unselectedIconColor = GlowYellow,
+            selectedTextColor = GlowYellow,
+            unselectedTextColor = GlowYellow,
             indicatorColor = Color.Transparent
         )
     )

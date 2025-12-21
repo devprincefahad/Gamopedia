@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import dev.prince.gamopedia.model.Result
+import dev.prince.gamopedia.util.glowishColor
 
 @Composable
 fun GameItem(
@@ -120,14 +121,7 @@ fun RatingChip(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(50))
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFFCFFF4A),
-                        Color(0xFF9EEA3A)
-                    )
-                )
-            )
+            .background(glowishColor)
             .padding(horizontal = 14.dp, vertical = 2.dp)
     ) {
         Text(

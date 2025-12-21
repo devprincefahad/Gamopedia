@@ -62,7 +62,7 @@ fun GenreContent(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = Color.White)
                 }
             }
 
@@ -95,7 +95,7 @@ fun GenreContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(
-                                    top = 42.dp,
+                                    top = 46.dp,
                                     start = 16.dp,
                                     end = 16.dp,
                                     bottom = 8.dp
@@ -105,7 +105,7 @@ fun GenreContent(
 
                             BackButton(
                                 onClick = { navigator?.pop() },
-                                size = 26.dp,
+                                size = 24.dp,
                                 modifier = Modifier.padding(horizontal = 9.dp)
                             )
 

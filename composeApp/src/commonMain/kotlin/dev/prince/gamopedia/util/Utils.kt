@@ -11,3 +11,12 @@ val backgroundGradient = Brush.verticalGradient(
         //1.0f to Color(0x66A5FF4A)
     )
 )
+
+val glowishColor = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFFCFFF4A),
+            Color(0xFF9EEA3A)
+        )
+    )
+
+val GlowYellow = Color(0xFFA5FF4A)

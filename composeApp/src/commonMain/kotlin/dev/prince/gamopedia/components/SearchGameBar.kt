@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dev.prince.gamopedia.util.GlowYellow
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import dev.prince.gamopedia.viewmodels.SearchViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -45,7 +46,7 @@ fun GamingSearchBar(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search",
-                tint = Color(0xFFCFFF4A)
+                tint = GlowYellow
             )
         },
 

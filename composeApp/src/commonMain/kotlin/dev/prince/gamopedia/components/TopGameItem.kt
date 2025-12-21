@@ -26,10 +26,11 @@ import dev.prince.gamopedia.model.Result
 @Composable
 fun TopGameItem(
     game: Result,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(160.dp)
             .height(220.dp)
             .clickable { onClick() },
