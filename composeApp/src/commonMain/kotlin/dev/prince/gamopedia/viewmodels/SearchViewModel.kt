@@ -8,6 +8,7 @@ import dev.prince.gamopedia.util.SearchUiState
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -30,7 +31,12 @@ class SearchViewModel(
                 .debounce(300)
                 .filter { it.isNotEmpty() }
                 .distinctUntilChanged()
-                .collect { query ->
+                .collectLatest { query ->
+                    if (query.isBlank()) {
+                        _searchState.value = SearchUiState.Idle
+                        return@collectLatest
+                    }
+                    _searchState.value = SearchUiState.Loading
                     searchGames(query)
                 }
         }
@@ -53,6 +59,11 @@ class SearchViewModel(
                 }
             )
         }
+    }
+
+    fun clearSearch() {
+        _searchQuery.value = ""
+        _searchState.value = SearchUiState.Idle
     }
 
 }

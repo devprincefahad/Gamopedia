@@ -26,6 +26,7 @@ import co.touchlab.kermit.Logger
 import dev.prince.gamopedia.tab.HomeTab
 import dev.prince.gamopedia.tab.SearchTab
 import dev.prince.gamopedia.tab.WishListTab
+import dev.prince.gamopedia.theme.googleSansTypography
 import dev.prince.gamopedia.viewmodels.GamesViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -33,7 +34,9 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    MaterialTheme(
+        typography = googleSansTypography()
+    ) {
 //        Navigator(screen = HomeScreen()) {
 //            SlideTransition(navigator = it)
 //        }

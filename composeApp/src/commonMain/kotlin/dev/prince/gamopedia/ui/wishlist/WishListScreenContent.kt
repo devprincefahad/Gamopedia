@@ -1,8 +1,13 @@
 package dev.prince.gamopedia.ui.wishlist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -12,6 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.prince.gamopedia.components.GameItem
 import dev.prince.gamopedia.navigation.GameDetailsScreen
@@ -28,41 +36,65 @@ fun WishListScreenContent(
     val navigator = LocalNavigator.current
 
     val wishlist by viewModel.wishlist.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
-        if (wishlist.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Your wishlist is empty️")
-            }
-            return
-        }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(wishlist) { item ->
-                GameItem(
-                    game = dev.prince.gamopedia.model.Result(
-                        id = item.id,
-                        name = item.name,
-                        backgroundImage = item.backgroundImage,
-                        released = item.released,
-                        rating = item.rating,
-                        genres = item.genre?.let { genreName ->
-                            listOf(
-                                dev.prince.gamopedia.model.Genre(
-                                    id = -1,
-                                    name = genreName
+        Column {
+
+            Text(
+                modifier = Modifier.padding(top = 42.dp, start = 16.dp),
+                text = "Your Wishlist",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            )
+
+            if (wishlist.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Your wishlist is empty️",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White
+                    )
+                }
+                return
+            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                item { Spacer(Modifier.height(16.dp)) }
+
+                items(wishlist) { item ->
+                    GameItem(
+                        game = dev.prince.gamopedia.model.Result(
+                            id = item.id,
+                            name = item.name,
+                            backgroundImage = item.backgroundImage,
+                            released = item.released,
+                            rating = item.rating,
+                            genres = item.genre?.let { genreName ->
+                                listOf(
+                                    dev.prince.gamopedia.model.Genre(
+                                        id = -1,
+                                        name = genreName
+                                    )
                                 )
-                            )
-                        } ?: emptyList()
-                    ),
-                    onClick = { navigator?.push(GameDetailsScreen(item.id)) }
-                )
+                            } ?: emptyList()
+                        ),
+                        onClick = { navigator?.push(GameDetailsScreen(item.id)) }
+                    )
+                }
             }
         }
     }

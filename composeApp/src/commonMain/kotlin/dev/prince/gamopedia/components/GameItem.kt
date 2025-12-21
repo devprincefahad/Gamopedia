@@ -91,6 +91,7 @@ fun GameItem(
                             text = genreNames,
                             color = Color.White.copy(alpha = 0.7f),
                             fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )

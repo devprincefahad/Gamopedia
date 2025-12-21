@@ -20,7 +20,7 @@ object KtorClient {
                 ignoreUnknownKeys = true
             })
         }
-        // https://api.rawg.io/api/games?key=1516e476943b4a8095bc09c465bb77e3
+
         install(DefaultRequest) {
             url {
                 host = "api.rawg.io"
@@ -31,9 +31,9 @@ object KtorClient {
         }
 
         install(HttpTimeout) {
-            socketTimeoutMillis = 6000
-            connectTimeoutMillis = 6000
-            requestTimeoutMillis = 6000
+            socketTimeoutMillis = 2000
+            connectTimeoutMillis = 2000
+            requestTimeoutMillis = 2000
         }
 
     }

@@ -56,7 +56,7 @@ fun HomeScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            item { Spacer(Modifier.height(32.dp)) }
+            item { Spacer(Modifier.height(34.dp)) }
 
             item {
                 Text(

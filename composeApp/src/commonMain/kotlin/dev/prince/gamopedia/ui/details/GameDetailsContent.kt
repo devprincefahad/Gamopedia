@@ -37,7 +37,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.AsyncImage
+import dev.prince.gamopedia.components.BackButton
 import dev.prince.gamopedia.components.ExpandableDescription
 import dev.prince.gamopedia.components.PlatformChips
 import dev.prince.gamopedia.components.ScreenshotsSection
@@ -63,6 +65,8 @@ fun GameDetailsContent(
     val screenshotsState by gamesViewModel.screenshots.collectAsState()
 
     val uriHandler = LocalUriHandler.current
+
+    val navigator = LocalNavigator.current
 
     LaunchedEffect(gameId) {
         gamesViewModel.fetchGameDetails(gameId)
@@ -145,6 +149,13 @@ fun GameDetailsContent(
                             )
                         }
 
+                        BackButton(
+                            onClick = { navigator?.pop() },
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(start = 16.dp, top = 42.dp),
+                            size = 42.dp
+                        )
 
                         IconButton(
                             onClick = {

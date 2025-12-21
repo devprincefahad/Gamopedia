@@ -1,6 +1,7 @@
 package dev.prince.gamopedia.ui.search
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -18,11 +20,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import dev.prince.gamopedia.components.GameItem
+import dev.prince.gamopedia.components.GamingSearchBar
 import dev.prince.gamopedia.navigation.GameDetailsScreen
 import dev.prince.gamopedia.util.SearchUiState
 import dev.prince.gamopedia.util.backgroundGradient
@@ -46,47 +54,80 @@ fun SearchScreenContent(
             .background(backgroundGradient)
     ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .padding(16.dp)
-        ) {
+        Column {
 
-            TextField(
-                value = query,
-                onValueChange = { viewModel.updateSearchQuery(it) },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search games...") },
-                singleLine = true
+            Text(
+                modifier = Modifier.padding(top = 42.dp, start = 16.dp),
+                text = "Search Games",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
             )
 
-            Spacer(Modifier.height(16.dp))
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-            when (state) {
-                SearchUiState.Idle -> {
-                    Text("Type to search games...", color = Color.Gray)
+                Box(
+                    modifier = Modifier
+                        .shadow(
+                            elevation = 16.dp,
+                            shape = RoundedCornerShape(14.dp),
+                            ambientColor = Color(0xBCCFFF4A),
+                            spotColor = Color(0xA4CFFF4A)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                ) {
+                    GamingSearchBar(
+                        query = query,
+                        onQueryChange = viewModel::updateSearchQuery
+                    )
+
                 }
 
-                SearchUiState.Loading -> {
-                    Box(Modifier.fillMaxSize(), Alignment.Center) {
-                        CircularProgressIndicator()
+                Spacer(Modifier.height(16.dp))
+
+                when (state) {
+                    SearchUiState.Idle -> {
+//                        Text(
+//                            modifier = Modifier
+//                                .padding(horizontal = 16.dp)
+//                                .align(Alignment.CenterHorizontally),
+//                            text = "Type to search games...",
+//                            fontSize = 16.sp,
+//                            fontWeight = FontWeight.Medium,
+//                            color = Color.White
+//                        )
                     }
-                }
 
-                is SearchUiState.Error -> {
-                    val msg = (state as SearchUiState.Error).message
-                    Text("Error: $msg")
-                }
+                    SearchUiState.Loading -> {
+                        Box(Modifier.fillMaxSize(), Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
 
-                is SearchUiState.Success -> {
-                    val results = (state as SearchUiState.Success).data
-                    LazyColumn {
-                        items(results) { game ->
-                            GameItem(
-                                game = game,
-                                onClick = {
-                                    navigator?.push(GameDetailsScreen(game.id))
-                                }
-                            )
+                    is SearchUiState.Error -> {
+                        val msg = (state as SearchUiState.Error).message
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp),
+                            text = "Error: $msg"
+                        )
+                    }
+
+                    is SearchUiState.Success -> {
+                        val results = (state as SearchUiState.Success).data
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(results) { game ->
+                                GameItem(
+                                    game = game,
+                                    onClick = {
+                                        navigator?.push(GameDetailsScreen(game.id))
+                                    }
+                                )
+                            }
                         }
                     }
                 }
