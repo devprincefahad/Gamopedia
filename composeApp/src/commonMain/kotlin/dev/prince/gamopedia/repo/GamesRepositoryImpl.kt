@@ -9,7 +9,7 @@ import dev.prince.gamopedia.model.GameResponse
 import dev.prince.gamopedia.api.ApiService
 import dev.prince.gamopedia.database.GenreEntity
 import dev.prince.gamopedia.database.ScreenshotEntity
-import dev.prince.gamopedia.database.WishlistEntry
+import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.model.GamesByGenreResponse
 import dev.prince.gamopedia.model.Genre
 import dev.prince.gamopedia.model.ParentPlatform
@@ -31,96 +31,122 @@ class GamesRepositoryImpl(
     private val dao: GamesDao
 ) : GamesRepository {
 
-    override fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>> = flow {
-        // 1. Emit cached DB first
-        val cached = dao.getGameDetails(id).firstOrNull()
-        if (cached != null) {
-            Logger.d { "Cache hit for game $id → Emitting cached details" }
-            emit(
-                Result.success(
-                    GameDetailsResponse(
-                        id = cached.id,
-                        name = cached.name,
-                        description = cached.description,
-                        backgroundImage = cached.backgroundImage,
-                        website = cached.website,
-                        rating = cached.rating,
-                        parentPlatforms = cached.platforms
-                            ?.split(", ")
-                            ?.map {
-                                ParentPlatform(
-                                    Platform(
-                                        id = -1,
-                                        name = it,
-                                        slug = it.lowercase()
-                                    )
-                                )
-                            }
-                            ?: emptyList()
-                    )
-                )
-            )
-        } else {
-            Logger.d { "No cached details found for game $id" }
-        }
-
-        // 2. Try API
-        val apiResult = api.getGameDetails(id)
-
-        apiResult.fold(
-            onSuccess = { response ->
-                // 3. Save to DB only if user opened
-                val entity = GameDetailsEntity(
-                    id = response.id,
-                    name = response.name,
-                    description = response.description,
-                    backgroundImage = response.backgroundImage,
-                    website = response.website,
-                    rating = response.rating,
-                    platforms = response.parentPlatforms.joinToString(", ") { it.platform.name }
-                )
-                dao.insertGameDetails(entity)
-
-                emit(Result.success(response))
-            },
-            onFailure = { e ->
-                // 4. If DB existed → emit success using DB fallback
-                Logger.e(e) { "API failed for game $id" }
-
-                if (cached != null) {
-                    emit(
-                        Result.success(
-                            GameDetailsResponse(
-                                id = cached.id,
-                                name = cached.name,
-                                description = cached.description,
-                                backgroundImage = cached.backgroundImage,
-                                website = cached.website,
-                                rating = cached.rating,
-                                parentPlatforms = cached.platforms?.split(", ")
-                                    ?.map {
-                                        ParentPlatform(
-                                            Platform(
-                                                id = -1,
-                                                name = it,
-                                                slug = it.lowercase()
-                                            )
-                                        )
-                                    }
-                                    ?: emptyList()
-                            )
-                        )
-                    )
-                } else {
-                    emit(Result.failure(e))
-                }
-            }
-        )
-    }
+//    override fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>> = flow {
+//        // 1. Emit cached DB first
+//        val cached = dao.getGameDetails(id).firstOrNull()
+//        if (cached != null) {
+//            Logger.d { "Cache hit for game $id → Emitting cached details" }
+//            emit(
+//                Result.success(
+//                    GameDetailsResponse(
+//                        id = cached.id,
+//                        name = cached.name,
+//                        description = cached.description,
+//                        backgroundImage = cached.backgroundImage,
+//                        website = cached.website,
+//                        rating = cached.rating,
+//                        parentPlatforms = cached.platforms
+//                            ?.split(", ")
+//                            ?.map {
+//                                ParentPlatform(
+//                                    Platform(
+//                                        id = -1,
+//                                        name = it,
+//                                        slug = it.lowercase()
+//                                    )
+//                                )
+//                            }
+//                            ?: emptyList()
+//                    )
+//                )
+//            )
+//        } else {
+//            Logger.d { "No cached details found for game $id" }
+//        }
+//
+//        // 2. Try API
+//        val apiResult = api.getGameDetails(id)
+//
+//        apiResult.fold(
+//            onSuccess = { response ->
+//                // 3. Save to DB only if user opened
+//                val entity = GameDetailsEntity(
+//                    id = response.id,
+//                    name = response.name,
+//                    description = response.description,
+//                    backgroundImage = response.backgroundImage,
+//                    website = response.website,
+//                    rating = response.rating,
+//                    platforms = response.parentPlatforms.joinToString(", ") { it.platform.name }
+//                )
+//                dao.insertGameDetails(entity)
+//
+//                emit(Result.success(response))
+//            },
+//            onFailure = { e ->
+//                // 4. If DB existed → emit success using DB fallback
+//                Logger.e(e) { "API failed for game $id" }
+//
+//                if (cached != null) {
+//                    emit(
+//                        Result.success(
+//                            GameDetailsResponse(
+//                                id = cached.id,
+//                                name = cached.name,
+//                                description = cached.description,
+//                                backgroundImage = cached.backgroundImage,
+//                                website = cached.website,
+//                                rating = cached.rating,
+//                                parentPlatforms = cached.platforms?.split(", ")
+//                                    ?.map {
+//                                        ParentPlatform(
+//                                            Platform(
+//                                                id = -1,
+//                                                name = it,
+//                                                slug = it.lowercase()
+//                                            )
+//                                        )
+//                                    }
+//                                    ?: emptyList()
+//                            )
+//                        )
+//                    )
+//                } else {
+//                    emit(Result.failure(e))
+//                }
+//            }
+//        )
+//    }
 
     override fun observeGameDetails(id: Int): Flow<GameDetailsEntity?> =
         dao.getGameDetails(id)
 
+    override suspend fun refreshGameDetails(id: Int): Result<Boolean> {
+        return try {
+            val apiResult = api.getGameDetails(id)
+
+            apiResult.fold(
+                onSuccess = { response ->
+                    val entity = GameDetailsEntity(
+                        id = response.id,
+                        name = response.name,
+                        description = response.description,
+                        backgroundImage = response.backgroundImage,
+                        website = response.website,
+                        rating = response.rating,
+                        platforms = response.parentPlatforms.joinToString(",") { it.platform.name }
+                    )
+                    dao.insertGameDetails(entity)
+                    Result.success(true)
+                },
+                onFailure = { e ->
+                    Result.failure(e)
+                }
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
     override fun searchGames(query: String): Flow<Result<GameResponse>> = flow {
         try {
             val response = api.searchGames(query)
@@ -155,19 +181,27 @@ class GamesRepositoryImpl(
             }
         )
     }
-    override fun observeWishlist(): Flow<List<GameEntity>> =
-        dao.getWishlistedGames()
+
+    override fun observeWishlist(): Flow<List<WishlistEntity>> =
+        dao.getWishlist()
 
     override fun isWishlisted(id: Int): Flow<Boolean> =
         dao.isWishlisted(id)
 
     override suspend fun addToWishlist(game: GameEntity) {
-        dao.insertGames(listOf(game))
-        dao.insertWishlistEntry(WishlistEntry(gameId = game.id))
+        val wishlistItem = WishlistEntity(
+            id = game.id,
+            name = game.name,
+            backgroundImage = game.backgroundImage,
+            released = game.released,
+            rating = game.rating,
+            genre = game.genre
+        )
+        dao.addToWishlist(wishlistItem)
     }
 
     override suspend fun removeFromWishlist(id: Int) {
-        dao.deleteWishlistEntry(id)
+        dao.removeFromWishlist(id)
     }
 
     override fun observeGenres(): Flow<List<Genre>> =

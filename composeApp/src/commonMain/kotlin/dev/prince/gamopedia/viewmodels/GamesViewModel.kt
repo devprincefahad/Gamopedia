@@ -3,7 +3,10 @@ package dev.prince.gamopedia.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import dev.prince.gamopedia.model.GameDetailsResponse
 import dev.prince.gamopedia.model.Genre
+import dev.prince.gamopedia.model.ParentPlatform
+import dev.prince.gamopedia.model.Platform
 import dev.prince.gamopedia.model.ScreenshotDto
 import dev.prince.gamopedia.network.NetworkObserver
 import dev.prince.gamopedia.network.NetworkStatus
@@ -131,18 +134,42 @@ class GamesViewModel(
     }
 
     fun fetchGameDetails(id: Int) {
-        viewModelScope.launch {
-            _detailsState.value = GameDetailsUiState.Loading
+        _detailsState.value = GameDetailsUiState.Loading
 
-            repository.getGameDetails(id).collect { result ->
-                result.fold(
-                    onSuccess = { response ->
-                        _detailsState.value = GameDetailsUiState.Success(response)
-                    },
-                    onFailure = { error ->
-                        _detailsState.value = GameDetailsUiState.Error(error.message ?: "Unknown error")
+        viewModelScope.launch {
+            launch {
+                repository.observeGameDetails(id).collect { entity ->
+                    if (entity != null) {
+
+                        val platformsList = entity.platforms
+                            ?.split(",")
+                            ?.map { it.trim() }
+                            ?.filter { it.isNotEmpty() }
+                            ?.map {
+                                ParentPlatform(Platform(-1, it, it.lowercase()))
+                            } ?: emptyList()
+
+                        _detailsState.value = GameDetailsUiState.Success(
+                            GameDetailsResponse(
+                                id = entity.id,
+                                name = entity.name,
+                                description = entity.description,
+                                backgroundImage = entity.backgroundImage,
+                                website = entity.website,
+                                rating = entity.rating,
+                                parentPlatforms = platformsList
+                            )
+                        )
                     }
-                )
+                }
+            }
+
+            try {
+                repository.refreshGameDetails(id)
+            } catch (e: Exception) {
+                if (_detailsState.value is GameDetailsUiState.Loading) {
+                    _detailsState.value = GameDetailsUiState.Error(e.message ?: "Failed to load details")
+                }
             }
         }
     }

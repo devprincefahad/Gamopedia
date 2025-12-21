@@ -15,20 +15,16 @@ interface GamesDao {
     @Query("DELETE FROM games")
     suspend fun clearGames()
 
-    @Query("""
-        SELECT games.* FROM games 
-        INNER JOIN wishlist_entries ON games.id = wishlist_entries.gameId 
-        --ORDER BY wishlist_entries.addedAt DESC
-    """)
-    fun getWishlistedGames(): Flow<List<GameEntity>>
+    @Query("SELECT * FROM wishlist_table")
+    fun getWishlist(): Flow<List<WishlistEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWishlistEntry(entry: WishlistEntry)
+    suspend fun addToWishlist(game: WishlistEntity)
 
-    @Query("DELETE FROM wishlist_entries WHERE gameId = :id")
-    suspend fun deleteWishlistEntry(id: Int)
+    @Query("DELETE FROM wishlist_table WHERE id = :id")
+    suspend fun removeFromWishlist(id: Int)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM wishlist_entries WHERE gameId = :id)")
+    @Query("SELECT EXISTS(SELECT 1 FROM wishlist_table WHERE id = :id)")
     fun isWishlisted(id: Int): Flow<Boolean>
 
     @Query("SELECT * FROM game_details WHERE id = :id")

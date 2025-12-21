@@ -3,6 +3,7 @@ package dev.prince.gamopedia.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.prince.gamopedia.database.GameEntity
+import dev.prince.gamopedia.database.WishlistEntity
 import dev.prince.gamopedia.repo.GamesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +17,8 @@ class WishListViewModel(
     private val repository: GamesRepository
 ) : ViewModel() {
 
-    private val _wishlist = MutableStateFlow<List<GameEntity>>(emptyList())
-    val wishlist: StateFlow<List<GameEntity>> = _wishlist
+    private val _wishlist = MutableStateFlow<List<WishlistEntity>>(emptyList())
+    val wishlist: StateFlow<List<WishlistEntity>> = _wishlist
 
     init {
         viewModelScope.launch {
@@ -32,9 +33,7 @@ class WishListViewModel(
 
     fun toggleWishlist(game: GameEntity) {
         viewModelScope.launch {
-            // Check status once using .first()
             val currentlyAdded = repository.isWishlisted(game.id).first()
-
             if (currentlyAdded) {
                 repository.removeFromWishlist(game.id)
             } else {

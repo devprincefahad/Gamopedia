@@ -3,7 +3,6 @@ package dev.prince.gamopedia.ui.wishlist
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -92,14 +91,14 @@ fun WishListScreenContent(
                             game = dev.prince.gamopedia.model.Result(
                                 id = item.id,
                                 name = item.name,
-                                backgroundImage = item.backgroundImage,
+                                backgroundImage = item.backgroundImage ?: "",
                                 released = item.released,
                                 rating = item.rating,
                                 genres = item.genre?.let { genreName ->
                                     listOf(
                                         dev.prince.gamopedia.model.Genre(
                                             id = -1,
-                                            name = genreName
+                                            name = genreName,
                                         )
                                     )
                                 } ?: emptyList()
