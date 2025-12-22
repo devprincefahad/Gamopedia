@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
 
-//    fun getGameDetails(id: Int): Flow<Result<GameDetailsResponse>>
-
     fun observeGameDetails(id: Int): Flow<GameDetailsEntity?>
 
     suspend fun refreshGameDetails(id: Int): Result<Boolean>

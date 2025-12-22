@@ -14,10 +14,12 @@ import dev.prince.gamopedia.repo.GamesRepository
 import dev.prince.gamopedia.util.GameDetailsUiState
 import dev.prince.gamopedia.util.GamesUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -133,51 +135,45 @@ class GamesViewModel(
         }
     }
 
-    fun fetchGameDetails(id: Int) {
-        _detailsState.value = GameDetailsUiState.Loading
+    fun getGameDetailsFlow(id: Int): Flow<GameDetailsUiState> = flow {
+        emit(GameDetailsUiState.Loading)
 
-        viewModelScope.launch {
-            launch {
-                repository.observeGameDetails(id).collect { entity ->
-                    if (entity != null) {
+        repository.observeGameDetails(id).collect { entity ->
+            if (entity != null) {
+                val platformsList = entity.platforms
+                    ?.split(",")
+                    ?.map { it.trim() }
+                    ?.filter { it.isNotEmpty() }
+                    ?.map { ParentPlatform(Platform(-1, it, it.lowercase())) }
+                    ?: emptyList()
 
-                        val platformsList = entity.platforms
-                            ?.split(",")
-                            ?.map { it.trim() }
-                            ?.filter { it.isNotEmpty() }
-                            ?.map {
-                                ParentPlatform(Platform(-1, it, it.lowercase()))
-                            } ?: emptyList()
-
-                        _detailsState.value = GameDetailsUiState.Success(
-                            GameDetailsResponse(
-                                id = entity.id,
-                                name = entity.name,
-                                description = entity.description,
-                                backgroundImage = entity.backgroundImage,
-                                website = entity.website,
-                                rating = entity.rating,
-                                parentPlatforms = platformsList
-                            )
+                emit(
+                    GameDetailsUiState.Success(
+                        GameDetailsResponse(
+                            id = entity.id,
+                            name = entity.name,
+                            description = entity.description,
+                            backgroundImage = entity.backgroundImage,
+                            website = entity.website,
+                            rating = entity.rating,
+                            parentPlatforms = platformsList
                         )
-                    }
-                }
+                    )
+                )
             }
-
-            try {
-                repository.refreshGameDetails(id)
-            } catch (e: Exception) {
-                if (_detailsState.value is GameDetailsUiState.Loading) {
-                    _detailsState.value = GameDetailsUiState.Error(e.message ?: "Failed to load details")
-                }
+        }
+    }.onStart {
+        viewModelScope.launch {
+            val result = repository.refreshGameDetails(id)
+            result.onFailure { error ->
+                Logger.e("$error")
             }
         }
     }
 
-    fun loadScreenshots(gameId: Int) {
-        viewModelScope.launch {
-            repository.getGameScreenshots(gameId)
-                .collect { _screenshots.value = it }
+    fun getScreenshotsFlow(gameId: Int): Flow<Result<List<ScreenshotDto>>> = flow {
+        repository.getGameScreenshots(gameId).collect {
+            emit(it)
         }
     }
 

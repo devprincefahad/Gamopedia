@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -39,6 +40,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import co.touchlab.kermit.Logger
 import coil3.compose.AsyncImage
@@ -62,20 +64,21 @@ fun GameDetailsContent(
     gameId: Int
 ) {
 
-    val state by gamesViewModel.detailsState.collectAsState()
+    val state by remember(gameId) {
+        gamesViewModel.getGameDetailsFlow(gameId)
+    }.collectAsState(initial = GameDetailsUiState.Loading)
+
     val isWishlisted by wishListViewModel
         .isWishlistedFlow(gameId)
         .collectAsState(initial = false)
 
-    val screenshotsState by gamesViewModel.screenshots.collectAsState()
+    val screenshotsState by remember(gameId) {
+        gamesViewModel.getScreenshotsFlow(gameId)
+    }.collectAsState(initial = null)
 
     val uriHandler = LocalUriHandler.current
     val navigator = LocalNavigator.current
 
-    LaunchedEffect(gameId) {
-        gamesViewModel.fetchGameDetails(gameId)
-        gamesViewModel.loadScreenshots(gameId)
-    }
     val scrollState = rememberScrollState()
 
     Box(
