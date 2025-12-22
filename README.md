@@ -4,6 +4,10 @@
 
 The app allows users to discover video games, search the RAWG database, view detailed information, and manage a local wishlist—all with a robust caching strategy that works seamlessly offline.
 
+| Home Screen | Categories | Game Details | Search | Wishlist | 
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/d33c4d98-bc96-4fe0-a43a-06438db56bc1" width="250"/> | <img src="https://github.com/user-attachments/assets/d314ae93-fbcb-44c5-9a6d-a7f720f4de9c" width="250"/> | <img src="https://github.com/user-attachments/assets/a42fef54-e7df-4116-81a2-6a8c2fb79dcf" width="250"/> | <img src="https://github.com/user-attachments/assets/6373f3b3-a5f9-410d-b5a0-e4d4d101bade" width="250"/> | <img src="https://github.com/user-attachments/assets/cc50cf0f-e9de-4eb7-8a7c-ef80168a4b5c" width="250"/> |
+
 ## 🎥 Screen recordings
 | Android                                                                                                  | iOS                                                                                                      |
 |----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
@@ -11,12 +15,12 @@ The app allows users to discover video games, search the RAWG database, view det
 
 ## ✨ Features
 
-- ** Cross-Platform:** Single codebase running on Android & iOS.
-- ** Offline-First Architecture:** Browsing history, game details, and search results are cached locally. The app remains fully functional without an internet connection.
-- ** Smart Search:** Search for games with debounce handling and local caching.
-- ** Local Wishlist:** Save your favorite games to a persistent local database (separated from cache to prevent data loss).
-- ** Rich Media:** High-quality image loading with memory caching.
-- ** Reactive UI:** Built entirely with Declarative UI (Compose) utilizing Unidirectional Data Flow (UDF).
+- **Cross-Platform:** Single codebase running on Android & iOS.
+- **Offline-First Architecture:** Browsing history, game details, and search results are cached locally. The app remains fully functional without an internet connection.
+- **Smart Search:** Search for games with debounce handling and local caching.
+- **Local Wishlist:** Save your favorite games to a persistent local database (separated from cache to prevent data loss).
+- **Rich Media:** High-quality image loading with memory caching.
+- **Reactive UI:** Built entirely with Declarative UI (Compose) utilizing Unidirectional Data Flow (UDF).
 
 ## 🛠️ Tech Stack & Libraries
 
