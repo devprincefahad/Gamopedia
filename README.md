@@ -1,35 +1,37 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# 🎮 Gamopedia - Compose Multiplatform
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+**Gamopedia** is a modern, offline-first mobile application built with **Kotlin Multiplatform (KMP)** and **Compose Multiplatform**. It runs natively on both **Android** and **iOS** while sharing over 99% of the codebase, including UI, business logic, and data handling.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+The app allows users to discover video games, search the RAWG database, view detailed information, and manage a local wishlist—all with a robust caching strategy that works seamlessly offline.
 
-### Build and Run Android Application
+## 🎥 Screen recordings
+| Android                                                                                                  | iOS                                                                                                      |
+|----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| <video src="https://github.com/user-attachments/assets/3d42b703-f42e-4fbc-98af-9336ed21b3c9" width=350/> | <video src="https://github.com/user-attachments/assets/0047c1ec-6b42-4a5c-8205-cef26e3540a6" width=350/> |
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## ✨ Features
 
-### Build and Run iOS Application
+- **🚀 Cross-Platform:** Single codebase running on Android & iOS.
+- **🔌 Offline-First Architecture:** Browsing history, game details, and search results are cached locally. The app remains fully functional without an internet connection.
+- **🔍 Smart Search:** Search for games with debounce handling and local caching.
+- **❤️ Local Wishlist:** Save your favorite games to a persistent local database (separated from cache to prevent data loss).
+- **🖼️ Rich Media:** High-quality image loading with memory caching.
+- **🔄 Reactive UI:** Built entirely with Declarative UI (Compose) utilizing Unidirectional Data Flow (UDF).
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+## 🛠️ Tech Stack & Libraries
 
----
+This project uses the latest libraries in the Kotlin Multiplatform ecosystem:
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+| Category | Library | Description |
+| :--- | :--- | :--- |
+| **Language** | [Kotlin](https://kotlinlang.org/) | 100% Kotlin codebase. |
+| **UI Framework** | [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/) | Declarative UI shared across Android & iOS. |
+| **Architecture** | **MVVM + Repository** | Clean architecture with separation of concerns. |
+| **Networking** | [Ktor](https://ktor.io/) | Asynchronous HTTP client for REST APIs. |
+| **DI** | [Koin](https://insert-koin.io/) | Pragmatic lightweight dependency injection. |
+| **Database** | [Room](https://developer.android.com/kotlin/multiplatform/room) | Persistence library over SQLite. |
+| **Async** | [Coroutines & Flow](https://kotlinlang.org/docs/coroutines-overview.html) | Managing background threads and reactive streams. |
+| **Navigation** | [Voyager](https://voyager.adriel.cafe/) | Multiplatform navigation library. |
+| **Image Loading** | [Coil 3](https://github.com/coil-kt/coil) | Image loading for Compose Multiplatform. |
+| **Logging** | [Kermit](https://github.com/touchlab/Kermit) | Centralized logging utility. |
+| **Config** | [BuildKonfig](https://github.com/yshrsmz/BuildKonfig) | Type-safe access to build configurations (API Keys). |
