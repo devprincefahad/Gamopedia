@@ -59,11 +59,11 @@ This project implements a **"Stale-While-Revalidate"** strategy using Reactive S
 4.  The Database automatically emits the new update to the UI.
 
 ## 📂 Project Structure
-commonMain/
+```commonMain/
 ├── di/              # Koin Dependency Injection modules
 ├── domain/          # Models and Entities
 ├── data/            # Repository implementation, API, and DB logic
 ├── database/        # Room Database setup and DAOs
 ├── network/         # Ktor HTTP client setup
 ├── viewmodel/       # Shared ViewModels (State Management)
-└── ui/              # Shared Compose Multiplatform Screens
+└── ui/              # Shared Compose Multiplatform Screens```
